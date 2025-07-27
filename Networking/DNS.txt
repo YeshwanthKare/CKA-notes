@@ -15,3 +15,24 @@ in the cluster is set
 -> The Corefile is passed into the pod as a config map object
 
 -> kubectl get configmap -n kube-system
+
+
+so likewise the DNS is resolved in the resolv.conf 
+
+
+===============================================
+
+
+The next thing is for the Pods to point to the CoreDNS server
+
+what address the pods use to reach the DNS server?
+
+-> kubectl get service -n kube-system
+
+-> config file of kubelet - cat /var/lib/kubelet/config.yaml
+
+-> host web-service - alternative to ns lookup for a service in kubernetes
+
+-> host 10-244-2-5 - will not be found
+
+-> host 10-244-2-5.default.pod.cluster.local - full FQDN should be specified
