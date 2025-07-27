@@ -1,0 +1,33 @@
+Container Network Interface:
+----------------------------
+
+-> Container Runtime must create network namespace
+-> Identify network the container must attach to
+-> Container Runtime to invoke Network Plugin (bridge) when container is ADDed.
+-> Container Runtime to invoke Network Plugin (bridge) when container is DELeted.
+-> JSON format of the Network Configuration
+
+
+Configuring CNI:
+----------------
+
+-> Container plugins are found in path: /opt/cni/bin
+-> But which plugin is configured and how to use is configured in path: /etc/cni/net.d
+
+
+Inspect Kubelet service and identify the container runtime endpoint value set for kubernetes
+-> ps -aux | grep -i kubelet | grep container-runtime
+
+
+
+IP Address Management - Weave
+-----------------------------
+
+CNI Plugin Responsibilities:
+
+-> Must support arguments ADD/DEL/CHECK
+-> Must support parameters container id, network ns etc..
+-> Must manage IP Address assignment to PODs
+-> Must Return results in a specific format
+
+weave range of IP Addresses: 10.32.0.1 - 10.47.255.254 (10.32.0.0/12) 1,048,574

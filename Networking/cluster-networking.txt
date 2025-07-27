@@ -1,0 +1,97 @@
+Docker Networks:
+________________
+----------------
+
+None:  docker run --network none nginx
+Host Network: docker run --network host nginx
+Bridge Network: docker run nginx
+-> docker network ls
+-> ip link - to view the links
+-> ip link add docker-0 type bridge - to add the docker-0 bridge
+-> ip addr - to see the address of all the network
+
+-> whenever a network is created, docker creates a namespace for it
+-> Run "ip netns" command to list the namespace
+-> we can inspect the namespace with - docker inspect <namespace>
+
+To know the ends of the interface:
+---------------------------------
+
+-> ip netns: displays the namespace
+-> ip link: shows the end of the interface on our side
+-> ip -n <namespace> link: to know the other end of the interface
+
+To view the IP od the endpoints:
+--------------------------------
+
+-> ip netns: shows the namespace
+-> ip -n <namespace> addr: to know the IP address of the endpoint
+
+
+Port Mapping:
+-------------
+
+-> docker run -p 8080:80 nginx
+
+***********************************************************************************************************************
+
+
+Container Networking Interface
+------------------------------
+
+1. Create Network Namespace
+2. Create Bridge Network/Interface
+3. Create VETH Pairs (Pipe, Virtual Cable)
+4. Attach vEth to Namespace
+5. Attach Other vEth to Bridge
+6. Assign IP Addresses
+7. Bring the interfaces up
+8. Enable NAT - IP Masquerade
+
+
+bridge add <namespace> /var/run/netns/<namespace>
+
+bridge add <cid> <namespace>
+
+-> Bridge program is a plugin in CNI
+
+- Container Runtime must create network namespace
+- Identify network the container must attach to
+- Container Runtime to invoke Network Plugin (bridge) when container is ADDed
+- Container Runtime to invoke Network Plugin (bridge) when container is DELeted
+- JSON format of the Network Configuration
+
+- Must support command line arguments ADD/DEL/CHECK
+- Must support parameters container id, network ns etc..
+- Must manage IP Address assignment to PODs
+- MUST Return results in a specific format
+
+BRIDGE VLAN IPVLAN MACVLAN WINDOWS
+
+DHCP.  host-local
+
+
+for Docker networks we need to manage the plugins on our own
+
+docker run --network=none nginx
+bridge add <namespace> /var/run/netns/<namespace>
+
+kube-api: 6443
+kubelet: 10250
+kube-scheduler: 10259
+kub-controller-manager: 10257
+ETCD: 2379
+
+
+commands:
+--------
+
+-> ip link
+-> ip addr
+-> ip addr add <IP>/24 dev eth0
+-> ip route
+-> ip route add <IP>/24 via <gateway-IP>
+-> cat /proc/sys/net/ipv4/ip_forward
+-> arp
+-> netstat -plnt
+-> route

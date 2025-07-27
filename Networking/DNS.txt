@@ -1,0 +1,17 @@
+-> cat >> /etc/hosts
+
+-> cat >> /etc/resolv.conf
+
+
+==> CoreDNS requires a configuration file known as CoreDNS file, within this file a number of plugins configured
+
+1. Plugins are configured for handling errors
+2. reporting health, monitoring metrics, cache etc
+3. The Plugin that works with kubernetes in CoreDNS is kubernetes plugin, that is why it is a top level domain name 
+in the cluster is set
+
+-> cat /etc/coredns/Corefile
+
+-> The Corefile is passed into the pod as a config map object
+
+-> kubectl get configmap -n kube-system

@@ -1,0 +1,27 @@
+How kube-proxy creates or deletes these rules
+
+1. Userspace    2. iptables    3. ipvs
+
+The proxy mode can be set using the proxy mode option, while configuraing the kube-proxy service
+
+-> kube-proxy --proxy-mode [userspace | iptables | ipvs]
+
+-> if this is not set, it deafults to iptables
+
+-> kubectl get pods -o wide
+
+-> kubectl get service
+
+-> the range is set by using the option called kube-api-server range
+	- kube-api-server --service-cluster-ip-range ipNet (Default: 10.0.0.0/24)
+
+-> to find the kube-api-server - ps aux | grep kube-api-server
+
+-> iptables -L -t nat | grep db-service
+
+-> cat /var/log/kube-proxy.log
+
+To find out the range of IP Address configured for Pods on this cluster
+
+-> cat /etc/kubernetes/manifests/kube-controller-manager.yaml   | grep cluster-cidr
+
