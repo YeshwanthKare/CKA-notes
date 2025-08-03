@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cors-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://allowed-origin.com"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/headers.customerresponseheaders: |
+      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+      Access-Control-Allow-Headers: Content-Type,Authorization
+      Access-Control-Allow-Credentials: true
+      Access-Control-Max-Age: 3600
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: cors-route
+spec:
+  parentRefs:
+    - name: my-gateway
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: Access-Control-Allow-Origin
+                value: ""
+              - name: Access-Control-Allow-Methods
+                value: ""
+              - name: Access-Control-Allow-Headers
+                value: ""
+              - name: Access-Control-Allow-Credentials
+                value: ""
+              - name: Access-Control-Max-Age
+                value: ""
+      backendRefs:
+        - name: api-service
