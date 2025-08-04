@@ -1,0 +1,146 @@
+Networking Pre-requisites
+-------------------------
+
+- Switching and Routing
+    - Switching
+    - Routing
+    - Default Gateway
+- DNS
+    - DNS Configuration
+    - CoreDNS Introduction
+- Network Namespaces
+- Docker Networking
+
+
+Switching
+---------
+
+ip link
+
+ip addr add 192.168.1.10/24 dev eth0
+
+ip addr add 192.168.1.11/24 dev eth0
+
+ip route  ---> to view the route table
+
+ip route add 192.168.1.0/24 via 192.168.2.1  ---> to add the entry in the route table
+
+cat /proc/sys/net/ipv4/ip_forward
+
+
+DNS
+---
+
+cat >> /etc/hosts
+192.168.1.11       db
+192.168.1.11       www.google.com
+
+ping db 
+ssh db
+curl http://www.google.com
+
+-> DNS will be found everytime in /etc/resolv.conf
+
+cat /etc/resolv.conf
+nameserver       192.168.1.10
+
+
+ping db
+
+
+cat >> /etc/hosts
+192.168.1.115           test
+
+cat /etc/nsswitch.conf
+...
+hosts          files dns
+...
+
+cat >> /etc/resolv.conf
+nameserver       192.168.1.10
+nameserver       8.8.8.8
+
+
+Domain Names
+------------
+
+cat >> /etc/resolv.conf
+
+nslookup
+
+dig
+
+
+Network Namespaces
+------------------
+
+ip nets add red ---> To create a new Network Namespace on Linux host
+ip nets add blue
+
+ip netns ---> to list the network Namespaces 
+ip link ---> to list the interfaces on my host
+
+ip netns exec red ip link ---> to see this inside the Namespace 
+
+ip -n red link
+
+ip netns exec red ip link === ip -n red link
+
+ip link add veth-red type veth peer name veth-blue ---> to establish connectivity between two network Namespaces
+
+ip link set veth-red netns red ---> to set the namespace to red namespace
+
+ip link set veth-blue netns blue ---> to set the namespace to blue namespace
+
+ip -n red addr add 192.168.15.1 dev veth-red ---> to assign ip address to the red namespace
+
+ip -n blue addr add 192.168.15.2 dev veth-blue ---> to assign ip address to the blue namespace
+
+ip -n red link set veth-red up ---> for setting up the links of red namespace IP
+
+ip -n blue link set veth-blue up ---> for setting up the links of blue namespace IP
+
+ip netns exec red arp ---> to see the arp of the red namespace
+
+ip netns exec blue arp ---> to see the arp of the blue namespace
+
+arp ---> to check the hosts in the Linux machine
+
+
+Linux bridge
+------------
+
+ip link add v-net-0 type bridge
+
+ip link
+
+ip link set dev v-net-0 up ---> to bring the bridge up
+
+ip -n red link del veth-red ---> to delete the cable of the previous connection
+
+ip link add veth-red type veth peer name veth-red-br ---> to connect to the bridge for red namespace
+
+ip link add veth-blue type veth peer name veth-blue-br ---> to connect to the bridge for blue namespace
+
+ip link set veth-red netns red
+
+ip link set veth-red-br master v-net-0
+
+ip link set veth-blue netns blue
+
+ip link set veth-blue-br master v-net-0
+
+ip -n red addr add 192.168.15.1 dev veth-red ---> to assign ip address to the red namespace
+
+ip -n blue addr add 192.168.15.2 dev veth-blue ---> to assign ip address to the blue namespace
+
+ping 192.168.15.1
+Not reachable!
+
+ip addr add 192.168.15.5/24 dev v-net-0
+
+ping 192.168.15.1
+
+
+
+

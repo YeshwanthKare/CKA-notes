@@ -1,0 +1,167 @@
+docker storage:
+
+/var/lib/docker
+
+1. aufs
+2. containers - information regarding containers
+3. image - information regarding the images
+4. volumes - information regarding the volumes
+
+
+Layered Architecture:
+
+1. Base Ubuntu Layer
+2. Changes in apt packages
+3. Changes in pip packages
+4. Source code
+5. Update Entrypoint
+
+
+docker volume create data_volume
+
+docker run -v data_volume:/var/lib/mysql mysql
+docker run -v data_volume2:/var/lib/mysql mysql
+
+docker run -v /data/mysql:/var/lib/mysql mysql
+
+docker run \
+    --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql
+
+
+Storage drivers
+
+- AUFS
+- ZFS
+- BTRFS
+- Device Mapper
+- Overlay
+- Overlay2
+
+
+
+
+
+Volume drivers
+
+- Local | Azure File Storage | Convoy | DigitalOcean Block Storage | Flocker | gce-docker | GlusterFS | Netapp | RexRay | Portworx |
+  VMware vSphere Storage
+
+
+docker run -it \
+    --name mysql
+    --volume-driver rexray/ebs
+    --mount src=ebs-vol,target=/var/lib/mysql
+    mysql
+
+
+
+Container Storage Interface
+
+1. Should call to provision a new volume
+2. Should call to delete a volume
+3. Should call to place a workload that uses the volume onto a node
+4. Should provision a new volume
+5. Should decommission a volume
+6 . Should make the volume available on a node
+
+
+Storage Class
+--------------
+
+Manual provisioning of Disk
+---------------------------
+
+gcloud beta compute disks create \
+  --size 1GB
+  --region us-east1
+  pd-disk
+
+
+pv-definition.yaml
+------------------
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  Capacity:
+    storage: 500Mi
+  gcePersistentDisk:
+    pdName: pd-disk
+    fsType: ext4
+  
+
+Dynamic Provisioning:
+--------------------
+
+sc-definition.yaml
+------------------
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: google-storage
+provisioner: kubernetes.io/gce-pd
+
+
+pvc-definition.yaml
+-------------------
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: google-storage
+  resources:
+    requests:
+      storage: 500Mi
+
+
+sc-definition.yaml
+------------------
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: silver
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+  replication-type: none
+
+
+sc-gold-definition.yaml
+-----------------------
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gold
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: none
+
+
+sc-platinum-definition.yaml
+-----------------------
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: platinum
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: regional-pd
+
+
