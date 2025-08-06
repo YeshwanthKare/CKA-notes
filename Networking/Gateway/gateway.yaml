@@ -4,10 +4,10 @@ metadata:
   name: example-gateway
 spec:
   gatewayClassName: example-class
-  listerners:
+  listeners:
     - name: http
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
-          from: all
+          from: All
