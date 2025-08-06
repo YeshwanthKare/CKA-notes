@@ -9,3 +9,9 @@ helm rollback wordpress
 
 helm uninstall wordpress
 ```
+
+## Installing Helm
+
+```
+sudo snap install helm --classic
+```
