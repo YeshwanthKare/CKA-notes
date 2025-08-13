@@ -15,5 +15,5 @@ containerd config default
 # Initialize Controlplane
 
 ```
-kubeadm init --apiserver-cert-extra-sans=controlplane --apiserver-advertise-address 192.217.72.10 --pod-network-cidr=172.17.0.0/16 --service-cidr=172.20.0.0/16
+kubeadm init --apiserver-cert-extra-sans=controlplane --apiserver-advertise-address 192.168.117.26 --pod-network-cidr=172.17.0.0/16 --service-cidr=172.20.0.0/16
 ```
