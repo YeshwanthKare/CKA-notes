@@ -69,3 +69,31 @@ helm list
 ```
 helm uninstall my-release
 ```
+
+# Customizing chart parameters
+
+-> to set the chart parameters
+
+```
+helm install --set wordpressBlogName="Helm Tutorials" my-release bitnami/wordpress
+
+--set wordpressEmail="john@example.com"
+```
+
+-> to make a custom-values.yaml
+
+```
+helm install --values custom-values.yaml my-release bitnami/wordpress
+```
+
+-> helm compressed charts
+
+```
+helm pull bitnami/wordpress
+
+helm pull --untar bitnami/wordpress
+
+ls wordpress
+
+helm install my-release ./wordpress
+```
