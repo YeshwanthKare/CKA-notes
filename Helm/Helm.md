@@ -97,3 +97,17 @@ ls wordpress
 
 helm install my-release ./wordpress
 ```
+
+-> Lifecycle Management with Helm
+
+```
+helm install nginx-release bitnami/nginx --version 7.1.0
+
+helm upgrade nginx-release bitnami/nginx
+
+helm list
+
+helm history nginx-release
+
+helm rollback nginx-release 1
+```
