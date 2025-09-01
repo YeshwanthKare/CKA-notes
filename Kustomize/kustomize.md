@@ -150,4 +150,136 @@ images:
       newTag: 2.4
 ```
 
+### Patches 
+
+-> Kustomize patches provide another method to modifying kubernetes configs
+-> Unlike common transformers, patches provide a more "surgical" approach to targeting one or more specific sections in a Kubernetes resource
+-> To create a patch 3 parameters must be provided:
+    - Operation Type: add/remove/replace
+    - Target: What resource should this patch be applied on
+        * Kind
+        * Version/Group
+        * Name
+        * Namespace
+        * labelSelector
+        * AnnotationSelector
+    - Value: What is the value that will either be replaced or added with (only needed for add/replace operations)
+
+-> Replace operation with Patches
+
+```
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+
+      patch: |-
+        - op: replace
+          path: /metadata/name
+          value: web-deployment
+
+---
+# this is a Json 6902 Patch
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+
+      patch: |-
+        - op: replace
+          path: /spec/replicas
+          value: 5
+```
+
+-> In kustomize, we have two different kinds of patches
+
+1. Json 6902 Patch
+2. Strategic Merge Patch
+
+```
+# Strategic merge patch
+
+patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+            name: api-deployment
+        spec:
+            replicas: 5
+```
+
+### Different types of Patches
+
+-> Inline for Json 6902 patch
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+
+      patch: |-
+        - op: replace
+          path: /spec/replicas
+          value: 5
+```
+
+-> Separate File for Json 6902 patch
+
+```
+Kustomization
+
+patches:
+    - path: replica-patch.yaml
+      target:
+        kind: Deployment
+        name: nginx-deployment
+
+
+replica-patch.yaml
+
+- op: replace
+  path: /spec/replicas
+  value: 5
+```
+
+-> Inline for Strategic merge patch
+
+```
+patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+            name: api-deployment
+        spec: 
+            replicas: 5
+```
+
+-> Separate file for Strategic merge patch
+
+```
+Kustomization
+
+patches:
+    - replica-patch.yaml
+
+
+replica-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    replicas: 5
+```
+
+
+
+
 
