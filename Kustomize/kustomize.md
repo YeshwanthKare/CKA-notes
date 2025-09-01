@@ -77,3 +77,77 @@ kubectl apply -f k8s/api/
 
 kubectl apply -f k8s/db/
 ```
+
+### Common Transformers
+
+-> commonLabel - adds a label to all Kubernetes resources
+-> namePrefix/Suffix - adds a common prefix-suffix to all resource names
+-> Namespace - adds a common namespace to all resources
+-> commonAnnotations - adds an annotation to all resources
+
+-> commonLabel transformer
+
+just add the commonLabels in kustomization.yaml
+
+```
+commonLabels:
+    org: KodeKloud
+```
+
+-> Namespace transformer
+
+In kustomization.yaml just add the content below
+
+```
+namespace: lab
+```
+
+-> Name Prefix/Suffix Transformer
+
+```
+namePrefix: KodeKloud-
+
+nameSuffix: -dev
+```
+
+-> commonAnnotations Transformer
+
+we can simply specify the information below
+
+```
+commonAnnotations:
+    branch: master
+```
+
+### Image Transformers
+
+-> The Images can be tranformed by using the below command
+
+```
+images:
+    - name: nginx
+      newName: haproxy
+```
+
+the name is the current name of the image and the newName is the new name that the old name is getting substituted by
+
+-> The tag of the image can be modified by the following
+
+```
+images:
+    - name: nginx
+      newTag: 2.4
+```
+
+This will change the tag of the image where no need to specify the old tag but just the name of the current image
+
+-> for example, we wanted to change the new image and the tag, then
+
+```
+images:
+    - name: nginx
+      newName: haproxy
+      newTag: 2.4
+```
+
+
