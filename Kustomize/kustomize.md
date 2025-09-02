@@ -279,6 +279,119 @@ spec:
     replicas: 5
 ```
 
+### Patches Dictionary
+
+-> Replace Dictionary in Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+
+      patch: |-
+        - op: replace
+          path: /spec/template/metadata/labels/component
+          value: web
+```
+
+-> Replace Dictionary Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        metadata:
+            labels:
+                component: web
+
+```
+
+-> Add Dictionary in Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+      patch: |-
+        - op: add
+          path: /spec/template/metadata/labels/org
+          value: KodeKloud
+```
+
+-> Add Dictionary in Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        metadata:
+            labels:
+                org: kodekloud
+```
+
+-> Remove Dictionary Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+      patch: |-
+        - op: remove
+          path: /spec/template/metadata/labels/org
+```
+
+-> Remove Dictionary in Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        metadata:
+            labels:
+                org: null
+```
+
+
 
 
 
