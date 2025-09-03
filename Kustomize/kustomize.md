@@ -511,6 +511,69 @@ spec:
                   name: database
 ```
 
+### Overlays
+
+-> Base/kustomization
+
+```
+resources:
+    - nginx-depl.yaml
+    - service.yaml
+    - redis-depl.yaml
+```
+
+-> Base/nginx-depl.yaml
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-deployment
+spec: 
+    replicas: 1
+```
+
+-> dev/kustomization
+
+```
+bases:
+    - ../../base
+patch: |-
+      - op: replace
+        path: /spec/replicas
+        values: 2
+```
+
+-> prod/kustomization
+
+```
+bases:
+    - ../../base
+patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 3
+```
+
+#### Adding new files in obverlays
+
+-> prod/kustomization
+
+```
+bases:
+    - ../../base
+
+resources:
+    - grafana-depl.yaml
+
+patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+```
+
+
+
 
 
 
