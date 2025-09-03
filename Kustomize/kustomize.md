@@ -391,6 +391,127 @@ spec:
                 org: null
 ```
 
+### Patches List
+
+-> Replace List in Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+      patch: |-
+        - op: replace
+          path: /spec/template/spec/containers/0
+          value: 
+            name: haproxy
+            image: haproxy
+```
+
+-> Replace List Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        spec:
+            containers:
+                - name: nginx
+                  image: haproxy
+```
+
+-> Add List Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+      patch: |-
+        - op: add
+          path: /spec/template/spec/containers/-
+          value: 
+            name: haproxy
+            image: haproxy
+```
+-> The - signifies that it will add the new container at the end of the list, i.e., it will append
+
+-> Add List Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        spec:
+            containers:
+                - name: haproxy
+                  image: haproxy
+```
+
+-> Delete List Json6902
+
+```
+Kustomization
+
+patches:
+    - target:
+        kind: Deployment
+        name: api-deployment
+      patch: |-
+        - op: remove
+          path: /spec/template/spec/containers/1
+```
+
+-> Delete List Strategic Merge Patch
+
+```
+Kustomization
+
+patches:
+    - label-patch.yaml
+
+
+label-patch.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-deployment
+spec:
+    template:
+        spec:
+            containers:
+                - $patch: delete
+                  name: database
+```
+
+
 
 
 
