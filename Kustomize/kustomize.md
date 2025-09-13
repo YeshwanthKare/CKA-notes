@@ -150,20 +150,17 @@ images:
       newTag: 2.4
 ```
 
-### Patches 
+### Patches
 
 -> Kustomize patches provide another method to modifying kubernetes configs
 -> Unlike common transformers, patches provide a more "surgical" approach to targeting one or more specific sections in a Kubernetes resource
--> To create a patch 3 parameters must be provided:
-    - Operation Type: add/remove/replace
-    - Target: What resource should this patch be applied on
-        * Kind
-        * Version/Group
-        * Name
-        * Namespace
-        * labelSelector
-        * AnnotationSelector
-    - Value: What is the value that will either be replaced or added with (only needed for add/replace operations)
+-> To create a patch 3 parameters must be provided: - Operation Type: add/remove/replace - Target: What resource should this patch be applied on
+_ Kind
+_ Version/Group
+_ Name
+_ Namespace
+_ labelSelector
+_ AnnotationSelector - Value: What is the value that will either be replaced or added with (only needed for add/replace operations)
 
 -> Replace operation with Patches
 
@@ -256,7 +253,7 @@ patches:
         kind: Deployment
         metadata:
             name: api-deployment
-        spec: 
+        spec:
             replicas: 5
 ```
 
@@ -405,7 +402,7 @@ patches:
       patch: |-
         - op: replace
           path: /spec/template/spec/containers/0
-          value: 
+          value:
             name: haproxy
             image: haproxy
 ```
@@ -445,10 +442,11 @@ patches:
       patch: |-
         - op: add
           path: /spec/template/spec/containers/-
-          value: 
+          value:
             name: haproxy
             image: haproxy
 ```
+
 -> The - signifies that it will add the new container at the end of the list, i.e., it will append
 
 -> Add List Strategic Merge Patch
@@ -529,7 +527,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: nginx-deployment
-spec: 
+spec:
     replicas: 1
 ```
 
@@ -572,11 +570,7 @@ patch: |-
         value: 2
 ```
 
+### Components
 
-
-
-
-
-
-
-
+-> Components provide the ability to define reusable pieces of configuration logic (resources + patches) that can be included in multiple overlays
+-> Components are useful in situations where applications support multiple optional features that need to be enabled only in a subset of overlays
