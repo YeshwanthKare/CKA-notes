@@ -1,3 +1,20 @@
+### Troubleshooting Application failure
+
+```
+curl http://web-service-ip:node-port
+
+kubectl describe service web-service
+
+kubectl get pod
+
+kubectl describe pod web
+
+kubectl logs web -f --previous
+```
+
+-f: for continuous logs
+--previous: for logs of previous pod
+
 ### Troubleshooting the controlplane
 
 ```
