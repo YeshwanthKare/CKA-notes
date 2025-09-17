@@ -229,3 +229,47 @@ $[*].model
 -> $.bus.wheels[*].model
 -> $.*.wheels[*].model
 ```
+
+#### JSON Path lists
+
+- To get the elements in the list
+
+```
+[
+	"Apple",
+	"Google",
+	"Microsoft",
+	"Amazon",
+	"Facebook",
+	"Coca-Cola",
+	"Samsung",
+    "Disney",
+	"Toyota",
+	"McDonald's"
+]
+```
+
+- Queries
+
+```
+$[0] - To get the first element in the list
+
+$[3] - To get the 4th element
+
+$[0,3] - To get the 1st and the 4th element
+
+$[0:3] - To get the 1st to 4th elements, but doesn't include the 4th element
+
+$[0:4] - If we wanted to have the 4th element
+
+$[0:8] - gets all the 8 elements in the list
+
+$[0:8:2] - it is a step which fetches the step wise manner, like get 1st, 3rd, 5th & 7th in a list, in other words skip or hop over one other item
+
+$[-1] - Gets the last item in the list, but doesnot work in certain implementations, instead we can use the term below
+
+$[-1:0] - gets the last element
+$[-1:]
+
+$[-3:] - Gets the last three items
+```
