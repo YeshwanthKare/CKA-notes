@@ -273,3 +273,132 @@ $[-1:]
 
 $[-3:] - Gets the last three items
 ```
+
+#### JSON PATH in Kubernetes
+
+- JSON path with Kubectl utility
+
+Objectives:
+- JSON PATH in Kubectl
+- Why JSON PATH?
+- View and interpret Kubectl output in JSON Format
+- How to use JSON PATH with Kubectl
+- JSON PATH examples
+- Loops - Range
+- Custom Columns
+- Sort
+
+- Why JSON Path
+
+1. Large Data sets
+	- 100s of Nodes
+	- 1000s of PODs, Deployments, ReplicaSets
+
+##### Kubectl
+
+- kubectl get nodes => This command is queried by the Kube-apiserver and then returns the human readable format
+- kubectl get nodes -o wide => to see the other options in the command
+
+##### Kubectl - JSON PATH
+
+- What if I wanted to see if the name of the nodes and the CPU they use like below
+
+```
+NAME      CPU
+master    4
+node01    4
+
+        or
+
+NAME      TAINTS
+master    node-role.kubernetes.io/master
+node01
+
+        or
+
+NAME       ARCHITECTURE
+master     amd64
+node01     amd64
+```
+- None of the builtin commands can give us this
+- With JSON PATH we can filter the output of the command as we like
+
+##### How to JSON PATH in Kubectl?
+
+1. Identify the Kubectl command
+	- kubectl get nodes
+	- kubectl get pods
+
+2. Familiarize with JSON output
+	- kubectl get nodes -o json
+	- kubectl get pods -o json
+
+3. Form the JSON PATH query
+	- .items[0].spec.containers[0].image
+
+4. Use the JSON PATH query with kubectl command
+	- kubectl get pods -o=jsonpath='{ .items[0].spec.containers[0].image }'
+
+##### JSON PATH examples
+
+```
+kubectl get nodes -o=jsonpath='{ .items[*].metadata.name }'
+master   node01
+
+kubectl get nodes -o=jsonpath='{ .items[*].status.nodeInfo.architecture }'
+amd64    amd64
+
+kubectl get pods -o=jsonpath='{ .items[*].status.capacity.cpu }'
+4   4
+
+# Merging two queries into one
+
+kubectl get nodes -o=jsonpath='{ .items[*].metadata.name }{ .items[*].status.capacity.cpu }'
+
+# layout of the JSON PATH
+
+kubectl get nodes -o=jsonpath='{ .items[*].metadata.name }{"\n"}{ .items[*].status.capacity.cpu }'
+master   node01
+4         4
+
+{"\n"} - New line
+{"\t"} - Tab
+```
+
+##### Loops - Range
+
+```
+kubectl get nodes -o=jsonpath='{ .items[*].metadata.name }{"\n"}{ .items[*].status.capacity.cpu }'
+
+# Range
+
+'{range .items[*]}
+
+	{.metadata.name}{"\t}{.status.capacity.cpu}{"\n"}
+
+{end}'
+
+# we can merge it all and pass it onto a JSON PATH kubectl command
+
+kubectl get nodes -o=jsonpath='{range .items[*]}{.metadata.name}{"\t}{.status.capacity.cpu}{"\n"}{end}'
+```
+
+##### JSON PATH for Custom Columns
+
+```
+kubectl get nodes -o=custom-columns=<COLUMN NAME>:<JSON PATH>
+
+kubectl get nodes -o=custom-columns=NODE:.metadata.name ,CPU:.status.capacity.cpu
+
+NODE     CPU
+master   4
+node01   4
+```
+
+##### JSON PATH for Sort
+
+```
+kubectl get nodes --sort-by=.metadata.name
+
+kubectl get nodes --sort-by=.status.capacity.cpu
+```
